@@ -7,10 +7,16 @@ import {
   Flex,
   Heading,
   Image,
+  Table,
+  TableBody,
+  TableHead,
   Text,
+  TableRow,
+  TableCell,
   TextField,
   View,
   withAuthenticator,
+  Link,
 } from '@aws-amplify/ui-react';
 import { listNotes } from "./graphql/queries";
 import {
@@ -18,7 +24,7 @@ import {
   deleteNote as deleteNoteMutation,
 } from "./graphql/mutations";
 
-const App = ({ signOut }) => {
+const App = ({ signOut, user }) => {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
@@ -28,6 +34,9 @@ const App = ({ signOut }) => {
   async function fetchNotes() {
     const apiData = await API.graphql({ query: listNotes });
     const notesFromAPI = apiData.data.listNotes.items;
+    console.log("test");
+    console.log(user.username);
+    console.log("id: " + user.attributes.email.substring(0,user.attributes.email.indexOf('@')))
     await Promise.all(
       notesFromAPI.map(async (note) => {
         if (note.image) {
@@ -48,6 +57,7 @@ const App = ({ signOut }) => {
       name: form.get("name"),
       description: form.get("description"),
       image: image.name,
+      author: user.attributes.email,
     };
     if (!!data.image) await Storage.put(data.name, image);
     await API.graphql({
@@ -71,7 +81,42 @@ const App = ({ signOut }) => {
 
   return (
     <View className="App">
-      <Heading level={1}>My Notes App</Heading>
+      <Heading level={1}>Dylan's Note App</Heading>
+      
+      <Heading level={4}>Current Notes</Heading>
+      <table border="0.5px" align="center"><tbody><tr><td>
+      <p><Text as="strong" color={'#666699'}>This is my bullet list</Text></p>
+      <ul>
+        <li>This link goes to my links </li>
+        <li><a href="./links.html">Links</a> </li>
+        <li>Thank You</li>
+      </ul>
+      <View margin="3rem 0">
+      <Table><TableBody>{notes.map((note) => (
+        <TableRow key={note.id || note.name}>
+        <TableCell>
+    <Text as="strong" fontFamily={18} color={'#666699'}>
+      {note.author.substring(0,note.author.indexOf("@"))}
+    </Text></TableCell><TableCell><Link
+    href={note.description}
+    color="#007EB9"
+    isExternal={true}>{note.name}</Link>
+    </TableCell><TableCell>
+    {note.image && (
+      <Image
+        src={note.image}
+        alt={`visual aid for ${notes.name}`}
+        style={{ width: 120 }}
+      />
+    )}</TableCell><TableCell>
+    <Button variation="link" onClick={() => deleteNote(note)}>
+    <Text as="strong" fontSize={18} color={'#ff6600'}>
+      Delete note
+      </Text>
+    </Button></TableCell></TableRow>))}
+</TableBody></Table>
+      </View></td></tr></tbody></table>
+      <Button onClick={signOut}>Sign Out</Button>
       <View as="form" margin="3rem 0" onSubmit={createNote}>
         <Flex direction="row" justifyContent="center">
           <TextField
@@ -82,12 +127,6 @@ const App = ({ signOut }) => {
             variation="quiet"
             required
           />
-          <View
-            name="image"
-            as="input"
-            type="file"
-            style={{ alignSelf: "end" }}
-          />
           <TextField
             name="description"
             placeholder="Note Description"
@@ -96,38 +135,17 @@ const App = ({ signOut }) => {
             variation="quiet"
             required
           />
+          <View
+          name="image"
+          as="input"
+          type="file"
+          style={{ alignSelf: "end" }}
+          />
           <Button type="submit" variation="primary">
             Create Note
           </Button>
         </Flex>
       </View>
-      <Heading level={2}>Current Notes</Heading>
-      <View margin="3rem 0">
-      {notes.map((note) => (
-  <Flex
-    key={note.id || note.name}
-    direction="row"
-    justifyContent="center"
-    alignItems="center"
-  >
-    <Text as="strong" fontWeight={700}>
-      {note.name}
-    </Text>
-    <Text as="span">{note.description}</Text>
-    {note.image && (
-      <Image
-        src={note.image}
-        alt={`visual aid for ${notes.name}`}
-        style={{ width: 400 }}
-      />
-    )}
-    <Button variation="link" onClick={() => deleteNote(note)}>
-      Delete note
-    </Button>
-  </Flex>
-))}
-      </View>
-      <Button onClick={signOut}>Sign Out</Button>
     </View>
   );
 };
