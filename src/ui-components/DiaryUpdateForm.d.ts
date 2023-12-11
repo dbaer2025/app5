@@ -21,32 +21,35 @@ export declare type ValidationResponse = {
     errorMessage?: string;
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
-export declare type NoteUpdateFormInputValues = {
+export declare type DiaryUpdateFormInputValues = {
     name?: string;
-    fid?: string;
-    src?: string;
+    image?: string;
+    description?: string;
+    author?: string;
 };
-export declare type NoteUpdateFormValidationValues = {
+export declare type DiaryUpdateFormValidationValues = {
     name?: ValidationFunction<string>;
-    fid?: ValidationFunction<string>;
-    src?: ValidationFunction<string>;
+    image?: ValidationFunction<string>;
+    description?: ValidationFunction<string>;
+    author?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
-export declare type NoteUpdateFormOverridesProps = {
-    NoteUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
+export declare type DiaryUpdateFormOverridesProps = {
+    DiaryUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
     name?: PrimitiveOverrideProps<TextFieldProps>;
-    fid?: PrimitiveOverrideProps<TextFieldProps>;
-    src?: PrimitiveOverrideProps<TextFieldProps>;
+    image?: PrimitiveOverrideProps<TextFieldProps>;
+    description?: PrimitiveOverrideProps<TextFieldProps>;
+    author?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
-export declare type NoteUpdateFormProps = React.PropsWithChildren<{
-    overrides?: NoteUpdateFormOverridesProps | undefined | null;
+export declare type DiaryUpdateFormProps = React.PropsWithChildren<{
+    overrides?: DiaryUpdateFormOverridesProps | undefined | null;
 } & {
     id?: string;
-    note?: any;
-    onSubmit?: (fields: NoteUpdateFormInputValues) => NoteUpdateFormInputValues;
-    onSuccess?: (fields: NoteUpdateFormInputValues) => void;
-    onError?: (fields: NoteUpdateFormInputValues, errorMessage: string) => void;
-    onChange?: (fields: NoteUpdateFormInputValues) => NoteUpdateFormInputValues;
-    onValidate?: NoteUpdateFormValidationValues;
+    diary?: any;
+    onSubmit?: (fields: DiaryUpdateFormInputValues) => DiaryUpdateFormInputValues;
+    onSuccess?: (fields: DiaryUpdateFormInputValues) => void;
+    onError?: (fields: DiaryUpdateFormInputValues, errorMessage: string) => void;
+    onChange?: (fields: DiaryUpdateFormInputValues) => DiaryUpdateFormInputValues;
+    onValidate?: DiaryUpdateFormValidationValues;
 } & React.CSSProperties>;
-export default function NoteUpdateForm(props: NoteUpdateFormProps): React.ReactElement;
+export default function DiaryUpdateForm(props: DiaryUpdateFormProps): React.ReactElement;
